@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello</title>
+    <!-- Подключаем надежную библиотеку для проверки MD5 хэшей вопросов -->
+    <script src="https://cloudflare.com"></script>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .eyes {
+            width: 100px;
+            height: 40px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .eye {
+            width: 25px;
+            height: 25px;
+            background-color: #fff;
+            border-radius: 50%;
+            animation: blink 4s infinite;
+        }
+        @keyframes blink {
+            0%, 90%, 100% { transform: scaleY(1); }
+            95% { transform: scaleY(0.1); }
+        }
+        #dialogue {
+            font-size: 16px;
+            text-align: center;
+            max-width: 600px;
+            height: 100px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+        #glitch-text {
+            color: #ff0000;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 15px;
+            display: none;
+            text-shadow: 0 0 5px #ff0000;
+        }
+        .blocks-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 90%;
+            max-width: 500px;
+        }
+        .quest-block {
+            background-color: #222; /* Изначально серый блок */
+            border: 2px solid #444;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        /* Когда ответ верный и подтвержден — блок окрашивается в глубокий черный */
+        .quest-block.correct {
+            background-color: #000 !important;
+            border-color: #fff;
+        }
+        .quest-block.locked input, 
+        .quest-block.locked button {
+            display: none; /* Навсегда прячем инпуты после выбора "Да" */
+        }
+        .quest-block span {
+            font-weight: bold;
+            color: #888;
+        }
+        .quest-block.correct span {
+            color: #fff;
+        }
+        input {
+            background: #111;
+            border: 1px solid #555;
+            color: #fff;
+            padding: 5px;
+            font-family: monospace;
+            text-align: center;
+        }
+        button {
+            background: #333;
+            border: 1px solid #555;
+            color: #fff;
+            cursor: pointer;
+            font-family: monospace;
+            padding: 5px;
+        }
+        button:hover { background: #444; }
+    </style>
+</head>
+<body>
+
+    <div class="eyes">
+        <div class="eye"></div>
+        <div class="eye"></div>
+    </div>
+
+    <div id="dialogue"></div>
+    <div id="glitch-text">[ДРУГОЙ ГОЛОС]: ЕЩЁ НЕ ОКОНЧЕНО.</div>
+
+    <div class="blocks-container">
+        <div class="quest-block" id="block-A">
+            <span>Вопрос A</span>
+            <input type="password" id="input-A" placeholder="Код...">
+            <button onclick="processAnswer('A')">Ответить</button>
+        </div>
+        <div class="quest-block" id="block-B">
+            <span>Вопрос B</span>
+            <input type="password" id="input-B" placeholder="Код...">
+            <button onclick="processAnswer('B')">Ответить</button>
+        </div>
+        <div class="quest-block" id="block-C">
+            <span>Вопрос C</span>
+            <input type="password" id="input-C" placeholder="Код...">
+            <button onclick="processAnswer('C')">Ответить</button>
+        </div>
+        <div class="quest-block" id="block-D">
+            <span>Вопрос D</span>
+            <input type="password" id="input-D" placeholder="Код...">
+            <button onclick="processAnswer('D')">Ответить</button>
+        </div>
+    </div>
+
+    <script>
+        // MD5-хэши правильных ответов (A=12132, B=7658, C=1272, D=834)
+        const targetHashes = {
+            A: "3a13fe3a0429f95dbe6848be4af91515",
+            B: "2d1f053531b7829285038fc99a5e81f7",
+            Campaign: "1414440939eb9f31b516f8ef1a7a2455", // Для C
+            C: "1414440939eb9f31b516f8ef1a7a2455",
+            D: "9b861e604f447ef3660a92d4715ec236"
+        };
+
+        const speechText = "Вы можете подумать, что весь проделанный вами путь бессмыслен и в целом, так и есть, но подумайте, сколько эмоций вы получили, сколько завели новых друзей, разве это того не стоит? Хоть вы и потратили время, в ожидании ответов, вы всё же никогда не забудете как решали эту загадку. И да... Как бы это не было грустно, но ваше путешествие...";
+
+        let charIndex = 0;
+        
+        // Машинка печатает текст Некто
+        function startTyping() {
+            if (charIndex < speechText.length) {
+                document.getElementById("dialogue").innerHTML += speechText.charAt(charIndex);
+                charIndex++;
+                setTimeout(startTyping, 35);
+            } else {
+                // Спустя ровно 4 секунды после финала речи появляется красный текст
+                setTimeout(() => {
+                    document.getElementById("glitch-text").style.display = "block";
+                }, 4000);
+            }
+        }
+
+        // Обработка ввода пароля
+        function processAnswer(letter) {
+            const inputEl = document.getElementById(`input-${letter}`);
+            const userPassword = inputEl.value.trim();
+            
+            // Вычисляем MD5 от ввода пользователя
+            const userHash = CryptoJS.MD5(userPassword).toString();
+
+            if (userHash === targetHashes[letter]) {
+                // Если пароль подошел, вызываем нативное окно подтверждения "Вы уверены? Да/Нет"
+                const confirmSubmit = confirm("Вы уверены?");
+                
+                if (confirmSubmit) {
+                    // Игрок нажал "Да" -> красим блок в черный и блокируем навсегда
+                    lockBlockPermanently(letter);
+                }
+                // Если нажал "Нет" -> ничего не происходит, можно переввести или подумать
+            } else {
+                alert("Неверный код доступа.");
+                inputEl.value = "";
+            }
+        }
+
+        // Функция жесткой блокировки и перекраски в черный
+        function lockBlockPermanently(letter) {
+            const currentBlock = document.getElementById(`block-${letter}`);
+            currentBlock.classList.add("correct", "locked");
+            
+            // Записываем состояние в localStorage, чтобы оно не сбросилось после перезагрузки
+            localStorage.setItem(`arg_state_block_${letter}`, "locked_black");
+        }
+
+        // При загрузке страницы запускаем лог и восстанавливаем сохраненную память
+        window.onload = function() {
+            startTyping();
+
+            ['A', 'B', 'C', 'D'].forEach(letter => {
+                if (localStorage.getItem(`arg_state_block_${letter}`) === "locked_black") {
+                    lockBlockPermanently(letter);
+                }
+            });
+        };
+    </script>
+</body>
+</html>
+
