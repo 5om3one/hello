@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Hello</title>
+    <title>Hello You</title>
     <style>
         body {
             background-color: #000;
@@ -192,7 +192,7 @@
             no: "0J3QtdGCRg==",
             reply: "0J7RgtCy0LXRgtC40YLRjA==",
             alertErr: "0JTQvtGB0YLRg9C_INC30LDQv9GA0LXRidC10L0uINCd0LXQstC10YDQvdGL0Lkg0LrQu9GO0Ycu",
-            glitchVoice: "W9CU0KDRg9CT0J7QmSDQk9Ce0JvQntChXTog0JXRemfYCDQndCVINCe0JrQntCd0KfQNdCd0J4u"
+            glitchVoice: "Li4u" // исправлено на корректный Base64 ("...")
         };
 
         const linesEnc = [
@@ -236,7 +236,6 @@
                 setTimeout(() => {
                     leftEye.style.transform = 'scaleY(1)';
                     rightEye.style.transform = 'scaleY(1)';
-                    // schedule next blink with random delay
                     setTimeout(doBlink, Math.random() * 3000 + 2000);
                 }, 150);
             }
