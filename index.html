@@ -128,6 +128,13 @@
             color: #000;
         }
 
+        .other-voice {
+            font-family: Georgia, "Times New Roman", serif;
+            font-style: italic;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+
         #glitch-voice {
             color: #ff0000;
             font-weight: bold;
@@ -215,9 +222,34 @@
         };
 
         const npcAnswersEnc = {
-            A: "0JIg0YjRg9C80LUg0L3QtdGCINGB0LzRi9GB0LvQsC4g0K3RgtC-INCy0YHQtdCz0L4g0LvQuNGI0Ywg0YjRg9C8Li4uINCd0LUg0LLRgdC10LPQtNCwINC90YPQttC90L4g0LjRgdC60LDRgtGMINGB0LzRi9GB0Lsg0LIg0YHQu9GD0YfQsNC50L3Ri9GFINCy0LXRidCw0YUuLi4",
-            B: "0JjRgNC10L0uLi4g0JTQtdCy0L7Rh9C60LAsINGH0YLQviDRgNC-0LTQuNC70LDRgdGMIDI5INGE0LXQstGA0LDQu9GPIDE4NDQg0LPQvtC00LAuINCe0L3QsCDRhdC-0YLQtdC70LAg0L7RgtC-0LzRgdGC0LjRgtGMLCDQvdC-INC20LDQttC00LAg0LzQtdGB0YLQuCDRgdC-0LbQs9C70LAg0LXRkS4uLg",
-            C: "0K8g0LfQvdCw0Y4g0LLRgdGRINC-INGB0LLQvtC10Lkg0LLRgdC10LvQtdC90L3QvtC5LiDQryDQvdC1INGF0L7RgtC10Lsg0Y3RgtC40YUg0LfQvdCw0L3QuNC5Li4uINCd0L4g0Y8g0L_QvtC70YPRh9C40Lsg0LjRhS4uLiDQryDQvdC1INGF0L7Rh9GDLCDRh9GC0L7QsdGLINCy0Ysg0YHRgNCw0LfRgyDRg9C30L3QsNC70Lgg0LLRgdC1INC-0YLQstC10YLRiy4g0J_QvtGC0L7QvNGDINGH0YLQviDQstGB0LXQvNGDINGB0LLQvtGRINCy0YDQtdC80Y8uLi4"
+            A: [
+                "0JIg0YjRg9C80LUg0L3QtdGCINGB0LzRi9GB0LvQsC4",
+                "0K3RgtC-INCy0YHQtdCz0L4g0LvQuNGI0Ywg0YjRg9C8Li4u",
+                "0J3QtSDQstGB0LXQs9C00LAg0L3Rg9C20L3QviDQuNGB0LrQsNGC0Ywg0YHQvNGL0YHQuyDQsiDRgdC70YPRh9Cw0LnQvdGL0YUg0LLQtdGJ0LDRhS4uLg",
+            ],
+            B: [
+                "0JjRgNC10L0uLi4",
+                "0JTQtdCy0L7Rh9C60LAsINGH0YLQviDRgNC-0LTQuNC70LDRgdGMIDI5INGE0LXQstGA0LDQu9GPIDE4NDQg0LPQvtC00LAu",
+                "0J7QvdCwINGF0L7RgtC10LvQsCDQvtGC0L7QvNGB0YLQuNGC0YwsINC90L4g0LbQsNC20LTQsCDQvNC10YHRgtC4INGB0L7QttCz0LvQsCDQtdGRLi4u",
+            ],
+            C: [
+                "0K8g0LfQvdCw0Y4g0LLRgdGRINC-INGB0LLQvtC10Lkg0LLRgdC10LvQtdC90L3QvtC5Lg",
+                "0K8g0L3QtSDRhdC-0YLQtdC7INGN0YLQuNGFINC30L3QsNC90LjQuS4uLg",
+                "0J3QviDRjyDQv9C-0LvRg9GH0LjQuyDQuNGFLi4u",
+                "0K8g0L3QtSDRhdC-0YfRgywg0YfRgtC-0LHRiyDQstGLINGB0YDQsNC30YMg0YPQt9C90LDQu9C4INCy0YHQtSDQvtGC0LLQtdGC0Ysu",
+                "0J_QvtGC0L7QvNGDINGH0YLQviDQstGB0LXQvNGDINGB0LLQvtGRINCy0YDQtdC80Y8uLi4",
+            ],
+            D: [
+                "0KfRgtC-INCx0Ysg0L_QvtC70YPRh9C40YLRjCDQvtGC0LLQtdGC0Ysg0YHRgNCw0LfRgyDQvdCwINCy0YHRkSwg0L3Rg9C20L3QviDRgdC40LvRjNC90L4g0L_QvtGB0YLQsNGA0LDRgtGM0YHRjy4uLg",
+                "0JLRiyDQvdC1INGB0YLQsNGA0LDQu9C40YHRjC4uLg",
+                "0JTQu9GPINCy0LDRgSDRjdGC0L4g0LHRi9C70L4g0LvRkdCz0LrQvtC5INC_0YDQvtCz0YPQu9C60L7QuSwg0YLQsNC6INCy0LXQtNGMPw",
+                "0KHRh9C40YLQsNC50YLQtSwg0YfRgtC-INCy0YHQtSDQstCw0YjQuCDRgdGC0LDRgNCw0L3QuNGPINCx0YvQu9C4INC90LDQv9GA0LDRgdC90Ysu",
+                "0JrQsNC6INC90LjQutCw0Log0YMg0LLQsNGBINC-0YHRgtCw0LvQvtGB0Ywg0LzQvdC-0LPQviDRhdC-0YDQvtGI0LjRhSDQstC-0YHQv9C-0LzQuNC90LDQvdC40Lkg0L7QsSDRjdGC0L7QvCDQstGB0ZHQvC4",
+                "0Jgg0LrQsNC6INCx0Ysg0LPRgNGD0YHRgtC90L4g0Y3RgtC-INC90LUg0LHRi9C70L4uLi4",
+                "0JLQsNGI0LUg0L_RgNC40LrQu9GO0YfQtdC90LjQtS4uLg",
+                "0JXQqdCBINCd0JUg0JfQkNCa0J7QndCn0JjQm9Ce0KHQrC4",
+                "0J7QndCeINCX0JDQmtCe0J3Qp9CY0KLQodCvINCi0J7Qk9CU0JAsINCa0J7Qk9CU0JAg0KHQmtCQ0JbQoyDQry4",
+            ],
         };
 
         const speechPartsDEnc = [
@@ -327,33 +359,57 @@
             displayFinalAnswer(selectedBlock);
         }
 
-        function typeSpeechDParts() {
+        function hideEyesForOtherVoice() {
+            const eyes = document.querySelector(".eyes-container");
+            if (eyes) eyes.style.display = "none";
+        }
+
+        function showEyesForNormalVoice() {
+            const eyes = document.querySelector(".eyes-container");
+            if (eyes) eyes.style.display = "flex";
+        }
+
+        function typeAnswerParts(parts, index = 0, specialClass = "") {
             const dialogue = document.getElementById("dialogue-box");
-            if (!dialogue) return;
+            if (!dialogue || index >= parts.length) return;
+            dialogue.className = "dialogue-container" + (specialClass ? " " + specialClass : "");
             dialogue.style.display = "block";
-
-            if (currentPartIndex >= speechPartsDEnc.length) return;
-
-            typeText(decodeText(speechPartsDEnc[currentPartIndex]), "dialogue-box", () => {
-                currentPartIndex++;
-                if (currentPartIndex < speechPartsDEnc.length) {
-                    setTimeout(typeSpeechDParts, 1200);
+            typeText(decodeText(parts[index]), "dialogue-box", () => {
+                if (index + 1 < parts.length) {
+                    setTimeout(() => typeAnswerParts(parts, index + 1, specialClass), 500);
                 }
+            });
+        }
+
+        function typeSpeechDParts(index = 0) {
+            const parts = npcAnswersEnc.D;
+            const dialogue = document.getElementById("dialogue-box");
+            if (!dialogue || index >= parts.length) return;
+            if (index >= parts.length - 2) {
+                hideEyesForOtherVoice();
+                dialogue.className = "dialogue-container other-voice";
+            } else {
+                showEyesForNormalVoice();
+                dialogue.className = "dialogue-container";
+            }
+            dialogue.style.display = "block";
+            typeText(decodeText(parts[index]), "dialogue-box", () => {
+                if (index + 1 < parts.length) setTimeout(() => typeSpeechDParts(index + 1), 500);
             });
         }
 
         function displayFinalAnswer(letter) {
             document.getElementById("blocks-wrapper").style.display = "none";
             document.getElementById("confirm-screen").style.display = "none";
-
             const dialogue = document.getElementById("dialogue-box");
+            dialogue.className = "dialogue-container";
             dialogue.style.display = "block";
-
             if (letter === 'D') {
                 currentPartIndex = 0;
                 typeSpeechDParts();
             } else if (npcAnswersEnc[letter]) {
-                typeText(decodeText(npcAnswersEnc[letter]), "dialogue-box");
+                showEyesForNormalVoice();
+                typeAnswerParts(npcAnswersEnc[letter]);
             }
         }
 
