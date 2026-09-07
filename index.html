@@ -35,10 +35,10 @@
         .dialogue-container {
             font-size: 20px;
             text-align: center;
-            max-width: 600px;
-            height: 60px;
+            max-width: 650px;
+            height: 80px;
             margin-bottom: 40px;
-            line-height: 1.4;
+            line-height: 1.5;
         }
 
         .blocks-container {
@@ -130,12 +130,13 @@
         #glitch-voice {
             color: #ff0000;
             font-weight: bold;
-            font-size: 22px;
-            text-shadow: 0 0 8px #ff0000;
+            font-size: 24px;
+            text-shadow: 0 0 10px #ff0000;
             display: none;
             text-align: center;
         }
     </style>
+    <script src="https://cloudflare.com"></script>
 </head>
 <body>
 
@@ -197,10 +198,15 @@
             C: "Я тот, кто строил эти коридоры до того, как они сгорели. Я наблюдал за её концом, и я наблюдаю за вашим началом."
         };
 
-        const speechTextD = "Вы можете подумать, что весь проделанный вами путь бессмыслен и в целом, так и есть, но подумайте, сколько эмоций вы получили, сколько завели новых друзей, разве это того не стоит? Хоть вы и потратили время, в ожидании ответов, вы всё же никогда не забудете как решали эту загадку. И да... Как бы это не было грустно, но ваше путешествие...";
+        const speechPartsD = [
+            "Вы можете подумать, что весь проделанный вами путь бессмыслен и в целом, так и есть, но подумайте, сколько эмоций вы получили, сколько завели новых друзей, разве это того не стоит?",
+            "Хоть вы и потратили время, в ожидании ответов, вы всё же никогда не забудете как решали эту загадку.",
+            "И да... Как бы это не было грустно, но ваше путешествие..."
+        ];
 
         let currentLine = 0;
         let selectedBlock = null;
+        let currentPartIndex = 0;
 
         function blinkEyes() {
             const leftEye = document.getElementById('left-eye');
@@ -274,7 +280,6 @@
             if (!block || !block.classList.contains("unlocked")) return;
 
             selectedBlock = letter;
-            
             document.getElementById("blocks-wrapper").style.display = "none";
             document.getElementById("confirm-screen").style.display = "flex";
         }
@@ -289,17 +294,32 @@
 
             localStorage.setItem("arg_final_choice", selectedBlock);
             document.getElementById("confirm-screen").style.display = "none";
-            
             displayFinalAnswer(selectedBlock);
+        }
+
+        function typeSpeechDParts() {
+            if (currentPartIndex < speechPartsD.length) {
+                typeText(speechPartsD[currentPartIndex], "dialogue-box", () => {
+                    setTimeout(() => {
+                        currentPartIndex++;
+                        typeSpeechDParts();
+                    }, 2500);
+                });
+            } else {
+                setTimeout(() => {
+                    const eyes = document.querySelector(".eyes-container");
+                    if (eyes) eyes.style.display = "none";
+                    document.getElementById("dialogue-box").style.display = "none";
+
+                    document.getElementById("glitch-voice").style.display = "block";
+                }, 4000);
+            }
         }
 
         function displayFinalAnswer(letter) {
             if (letter === 'D') {
-                typeText(speechTextD, "dialogue-box", () => {
-                    setTimeout(() => {
-                        document.getElementById("glitch-voice").style.display = "block";
-                    }, 4000);
-                });
+                currentPartIndex = 0;
+                typeSpeechDParts();
             } else {
                 typeText(npcAnswers[letter], "dialogue-box");
             }
@@ -329,3 +349,4 @@
     </script>
 </body>
 </html>
+
