@@ -64,7 +64,7 @@
             font-weight: bold;
             color: #888;
         }
-        
+
         .quest-block input {
             background: #111;
             border: 1px solid #555;
@@ -199,7 +199,7 @@
             "0J_RgNC40LLQtdGC0YHRgtCy0YPRjtGO",
             "0JLQvtGCINC80Ysg0Lgg0LLRgdGC0YDQtdGC0LjQu9C40YHRjCDQu9C40YbQvtC8INC6INC70LjRhtGD",
             "0K8g0YPQttC1INC00LDQstC90L4g0L3QsNCx0LvRjtC00LDRjtYg0LfQsCDQstCw0LzQuA==",
-            "0Jgg0LrQsNC6INCy0LjQttGDLCDQstGLINC20LDQttC00LXRgtC1INGD0LfQvdCw0YLRjCDQvtGC0LLQtdGC0Ysummary=",
+            "0Jgg0LrQsNC6INCy0LjQttGDLCDQstGLINC20LDQttC00LXRgtC1INGD0LfQvdCw0YLRjCDQvtGC0LLQtdGC0Yv+",
             "0K8g0L_QvtC30LLQvtC70Y4g0LLQsNC8INGD0LfQvdCw0YLRjCDQvtGC0LLQtdGCLi4u",
             "0L3QviDRgtC+0LvRjNC60L4g0L3QsCDQvtC00LjQvCDQstC+0L_RgNC+0YE="
         ];
@@ -242,6 +242,7 @@
 
         function typeText(text, elementId, callback) {
             const el = document.getElementById(elementId);
+            if (!el) return;
             el.innerHTML = "";
             let i = 0;
             function type() {
@@ -346,7 +347,8 @@
             document.getElementById("btn-no").innerText = decodeText(uiText.no);
             document.getElementById("glitch-voice").innerText = decodeText(uiText.glitchVoice);
             ['A', 'B', 'C', 'D'].forEach(letter => {
-                document.getElementById(`submit-${letter}`).innerText = decodeText(uiText.reply);
+                const btn = document.getElementById(`submit-${letter}`);
+                if (btn) btn.innerText = decodeText(uiText.reply);
             });
         }
 
@@ -375,3 +377,4 @@
     </script>
 </body>
 </html>
+
