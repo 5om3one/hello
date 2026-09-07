@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Hello You</title>
+    <title>Hello</title>
     <style>
         body {
             background-color: #000;
@@ -182,15 +182,11 @@
 
     <script>
         function decodeText(base64Str) {
-            try {
-                let cleaned = String(base64Str).replace(/\s/g, '').replace(/_/g, '/').replace(/-/g, '+');
-                while (cleaned.length % 4 !== 0) cleaned += '=';
-                const binary = atob(cleaned);
-                const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
-                return new TextDecoder('utf-8', { fatal: false }).decode(bytes);
-            } catch (e) {
-                return '';
-            }
+            let cleaned = String(base64Str).replace(/\s/g, '').replace(/_/g, '/').replace(/-/g, '+');
+            while (cleaned.length % 4 !== 0) cleaned += '=';
+            const binary = atob(cleaned);
+            const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+            return new TextDecoder('utf-8', { fatal: false }).decode(bytes);
         }
 
         const uiText = {
@@ -219,15 +215,21 @@
         };
 
         const npcAnswersEnc = {
-            A: "0JfQstGD0LrQuCDQuCDQv9C-0LzQtdGF0LgsINC60L7RgtC-0YDRi9C1INCy0Ysg0YHQu9GL0YjQsNC70Lgg4oCUINGN0YLQviDQvdC1INC_0YDQvtGB0YLQviDRhdCw0L7RgS4g0JL_0LrQsNC20LTQvtC8INGI0L7RgC-0YXQtSDQvtGB0L7QsdC90Y_QutCwINGB0LrRgNGL0LLQsNC10YLRgdGPINC10ZEg0LrRgNC40LouINCd0L4g0LjRgdGC0LjQvdC90YvQuSDRgdC80YvRgdC7INGI0YPQvNCwINCy0Ysg0L7RgdC-0LfQvdCw0LXRgtC10L_QvtC00LfQtdC_Lg==",
-            B: "0JjRgNC10L0g4oCUINGN0YLQviDQtNC40YLRjCwg0YDQvtC20LTQtdC90L3QvtC1INC_0L7QtCDQvdC10YHRh9Cw0YHRgtC70LjQstC-0Lkg0LfQstC10LfQtNC-0LkgMjkg0YLRkdCy0YDQsCw0LvRiy4g0JHQtdGB0L_QvtC60L7QudC90LDRjyDRg9GI0LAsINC30LDRgdGC0Y_PRNCw0YjQuNGB0Y8g0LIg0L_Qu9Cw0LzQtdC90Lgg0YHQvtCx0YHRgtCy0LXQvdC90LrQuNC5INC80LXRgdGC0LguINC-0L3QsCDQuCDQtdGB0YLRjCDRjdGC0L7Riywg0L7RgdC-0LHQvdGP0LrRgy4=",
-            C: "0K8g0YLQvtC9LCDQutGC0L4g0YHRgtGA0L7QuNC7INGN0YLQuCDQutC-0YDQuNC00L7RgNGLINC00L4g0YLQvtCz0L4sINC60LDQuiDQvtC90Lgg0YHQv9Cw0LLQuNC70LguINCS0YHQtdC10LQg0LfQsNCx0LvRjtC00LDQuyDQt9CwINC10Ycg0LrQvtC90YbQvtCyLCDQuCDRjyDQvdCw0LHQu9GO0LTQsNGOINC30LAg0LLQsNGI0LDQvNC4INC90LDRh9Cw0LvQvtC8Lg=="
+            A: "0JIg0YjRg9C80LUg0L3QtdGCINGB0LzRi9GB0LvQsC4g0K3RgtC-INCy0YHQtdCz0L4g0LvQuNGI0Ywg0YjRg9C8Li4uINCd0LUg0LLRgdC10LPQtNCwINC90YPQttC90L4g0LjRgdC60LDRgtGMINGB0LzRi9GB0Lsg0LIg0YHQu9GD0YfQsNC50L3Ri9GFINCy0LXRidCw0YUuLi4",
+            B: "0JjRgNC10L0uLi4g0JTQtdCy0L7Rh9C60LAsINGH0YLQviDRgNC-0LTQuNC70LDRgdGMIDI5INGE0LXQstGA0LDQu9GPIDE4NDQg0LPQvtC00LAuINCe0L3QsCDRhdC-0YLQtdC70LAg0L7RgtC-0LzRgdGC0LjRgtGMLCDQvdC-INC20LDQttC00LAg0LzQtdGB0YLQuCDRgdC-0LbQs9C70LAg0LXRkS4uLg",
+            C: "0K8g0LfQvdCw0Y4g0LLRgdGRINC-INGB0LLQvtC10Lkg0LLRgdC10LvQtdC90L3QvtC5LiDQryDQvdC1INGF0L7RgtC10Lsg0Y3RgtC40YUg0LfQvdCw0L3QuNC5Li4uINCd0L4g0Y8g0L_QvtC70YPRh9C40Lsg0LjRhS4uLiDQryDQvdC1INGF0L7Rh9GDLCDRh9GC0L7QsdGLINCy0Ysg0YHRgNCw0LfRgyDRg9C30L3QsNC70Lgg0LLRgdC1INC-0YLQstC10YLRiy4g0J_QvtGC0L7QvNGDINGH0YLQviDQstGB0LXQvNGDINGB0LLQvtGRINCy0YDQtdC80Y8uLi4"
         };
 
         const speechPartsDEnc = [
-            "0JLRiyDQvNC-0LbQtdGC0LUg0L_QvtC00YPQvNCw0YLRjCwg0YfRgtC-INCy0LXRgdGMINC_0YDQvtC00LXQu9Cw0L3QvdGL0Lkg0LLQsNC80Lgg0L_Rg9GC0Ywg0LHQtdGB0YHQvNGL0YHQu9C10L0g0Lgg0LIg0YbQtdC70L7QvCwg0YLQsNC6INC4INC10YHRgtGMLCDQvdC-INC_0L7QtNGD0LzQsNC50YLQtSwg0YHQutC-0LvRjNC60L4g0Y3QvNC-0YbQuNC5INCy0Ysg0L_QvtC70YPRh9C40LvQuCwg0YHQutC-0LvRjNC60L4g0LfQsNCy0LXQu9C4INC90L7QstGL0YUg0LTRgNGD0LfQtdC5LCDRgNCw0LfQstC1INGN0YLQviDRgtC-0LPQviDQvdC1INGB0YLQvtC40YI_",
-            "0KXQvtGC0Ywg0LLRiyDQuCDQv9C-0YLRgNCw0YLQuNC70Lgg0LLRgNC10LzRjCwg0LIg0L7QttC40LTQsNC90LjQuCDQvtGC0LLQtdGC0L7Qsiwg0LLRiyDQstGB0ZHQttC1INC90LjQutC-0LPQtNCwINC90Lgg0LfQsNCx0YPQtNC10YLQtSDQutCw0Log0YDQtdGI0LDQu9C4INGN0YLRg9C_0LfQsNCz0LDQtNC60YMu",
-            "0Jgg0LTQsC4uLiDQmtCw0Log0LHRiyDRjdGC0L4g0L3QtSDQsdGL0LvQviDQsyDRgNGD0YHRgtC90L4sINC90L4g0LLQsNGI0LUg0L_Rg9GC0LXRiNC10YHRgtCy0LjQtS4uLg=="
+            "0KfRgtC-INCx0Ysg0L_QvtC70YPRh9C40YLRjCDQvtGC0LLQtdGC0Ysg0YHRgNCw0LfRgyDQvdCwINCy0YHRkSwg0L3Rg9C20L3QviDRgdC40LvRjNC90L4g0L_QvtGB0YLQsNGA0LDRgtGM0YHRjy4uLg",
+            "0JLRiyDQvdC1INGB0YLQsNGA0LDQu9C40YHRjC4uLg",
+            "0JTQu9GPINCy0LDRgSDRjdGC0L4g0LHRi9C70L4g0LvRkdCz0LrQvtC5INC_0YDQvtCz0YPQu9C60L7QuSwg0YLQsNC6INCy0LXQtNGMPw",
+            "0KHRh9C40YLQsNC50YLQtSwg0YfRgtC-INCy0YHQtSDQstCw0YjQuCDRgdGC0LDRgNCw0L3QuNGPINCx0YvQu9C4INC90LDQv9GA0LDRgdC90Ysu",
+            "0JrQsNC6INC90LjQutCw0Log0YMg0LLQsNGBINC-0YHRgtCw0LvQvtGB0Ywg0LzQvdC-0LPQviDRhdC-0YDQvtGI0LjRhSDQstC-0YHQv9C-0LzQuNC90LDQvdC40Lkg0L7QsSDRjdGC0L7QvCDQstGB0ZHQvC4",
+            "0Jgg0LrQsNC6INCx0Ysg0LPRgNGD0YHRgtC90L4g0Y3RgtC-INC90LUg0LHRi9C70L4uLi4",
+            "0JLQsNGI0LUg0L_RgNC40LrQu9GO0YfQtdC90LjQtS4uLg",
+            "0JXQqdCBINCd0JUg0JfQkNCa0J7QndCn0JXQndCeLg",
+            "0J7QndCeINCX0JDQmtCe0J3Qp9CY0KLQodCvINCi0J7Qk9CU0JAsINCa0J7Qk9CU0JAg0KHQmtCQ0JbQoyDQry4"
         ];
 
         let currentLine = 0;
@@ -326,31 +328,31 @@
         }
 
         function typeSpeechDParts() {
-            if (currentPartIndex < speechPartsDEnc.length) {
-                typeText(decodeText(speechPartsDEnc[currentPartIndex]), "dialogue-box", () => {
-                    setTimeout(() => {
-                        currentPartIndex++;
-                        typeSpeechDParts();
-                    }, 2500);
-                });
-            } else {
-                setTimeout(() => {
-                    const eyes = document.querySelector(".eyes-container");
-                    if (eyes) eyes.style.display = "none";
-                    document.getElementById("dialogue-box").style.display = "none";
-                    document.getElementById("glitch-voice").style.display = "block";
-                }, 4000);
-            }
+            const dialogue = document.getElementById("dialogue-box");
+            if (!dialogue) return;
+            dialogue.style.display = "block";
+
+            if (currentPartIndex >= speechPartsDEnc.length) return;
+
+            typeText(decodeText(speechPartsDEnc[currentPartIndex]), "dialogue-box", () => {
+                currentPartIndex++;
+                if (currentPartIndex < speechPartsDEnc.length) {
+                    setTimeout(typeSpeechDParts, 1200);
+                }
+            });
         }
 
         function displayFinalAnswer(letter) {
             document.getElementById("blocks-wrapper").style.display = "none";
             document.getElementById("confirm-screen").style.display = "none";
 
+            const dialogue = document.getElementById("dialogue-box");
+            dialogue.style.display = "block";
+
             if (letter === 'D') {
                 currentPartIndex = 0;
                 typeSpeechDParts();
-            } else {
+            } else if (npcAnswersEnc[letter]) {
                 typeText(decodeText(npcAnswersEnc[letter]), "dialogue-box");
             }
         }
