@@ -136,7 +136,6 @@
             text-align: center;
         }
     </style>
-    <script src="https://cloudflare.com"></script>
 </head>
 <body>
 
@@ -148,64 +147,80 @@
     <div class="dialogue-container" id="dialogue-box"></div>
 
     <div class="overlay-screen" id="confirm-screen">
-        <div class="confirm-text">Вы уверены?</div>
+        <div class="confirm-text" id="confirm-label"></div>
         <div class="buttons-group">
-            <button class="action-btn" onclick="finalDecision(true)">Да</button>
-            <button class="action-btn" onclick="finalDecision(false)">Нет</button>
+            <button class="action-btn" id="btn-yes" onclick="finalDecision(true)"></button>
+            <button class="action-btn" id="btn-no" onclick="finalDecision(false)"></button>
         </div>
     </div>
 
-    <div id="glitch-voice">ЕЩЁ НЕ ОКОНЧЕНО.</div>
+    <div id="glitch-voice"></div>
 
     <div class="blocks-container" id="blocks-wrapper">
         <div class="quest-block" id="block-A" onclick="handleBlockClick('A')">
             <div class="block-title">A</div>
             <input type="password" id="input-A" placeholder="" onclick="event.stopPropagation()">
-            <button onclick="checkPassword('A', event)">Ответить</button>
+            <button id="submit-A" onclick="checkPassword('A', event)"></button>
         </div>
         <div class="quest-block" id="block-B" onclick="handleBlockClick('B')">
             <div class="block-title">B</div>
             <input type="password" id="input-B" placeholder="" onclick="event.stopPropagation()">
-            <button onclick="checkPassword('B', event)">Ответить</button>
+            <button id="submit-B" onclick="checkPassword('B', event)"></button>
         </div>
         <div class="quest-block" id="block-C" onclick="handleBlockClick('C')">
             <div class="block-title">C</div>
             <input type="password" id="input-C" placeholder="" onclick="event.stopPropagation()">
-            <button onclick="checkPassword('C', event)">Ответить</button>
+            <button id="submit-C" onclick="checkPassword('C', event)"></button>
         </div>
         <div class="quest-block" id="block-D" onclick="handleBlockClick('D')">
             <div class="block-title">D</div>
             <input type="password" id="input-D" placeholder="" onclick="event.stopPropagation()">
-            <button onclick="checkPassword('D', event)">Ответить</button>
+            <button id="submit-D" onclick="checkPassword('D', event)"></button>
         </div>
     </div>
 
     <script>
-        const lines = [
-            "Приветствую",
-            "Вот мы и встретились лицом к лицу",
-            "Я уже давно наблюдаю за вами",
-            "И как вижу, вы жаждаете узнать ответы",
-            "Я позволю вам узнать ответ...",
-            "но только на один вопрос"
-        ];
+        function decodeText(base64Str) {
+            return decodeURIComponent(atob(base64Str).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+        }
 
-        const passwords = { A: "12132", B: "7658", C: "1272", D: "834" };
-
-        const npcAnswers = {
-            A: "В шуме нету смысла. Это просто шум... Иногда нет смысла искать логику в случайных вещах...",
-            B: "Ирен — это дитя, рожденное под несчастливой звездой 29 февраля 1844 года. Беспокойная душа, застрявшая в пламени собственной мести...",
-            C: "Я знаю всё о своей вселенной. Но мне не нужны были эти знания. Я здесь лишь для того, что бы не позволить вам получить эти знания... Вам это не понравится..."
+        const uiText = {
+            confirm: "0JLQu9C1INGD0LLQtdGA0LXQvdGLPw==",
+            yes: "0JTQsA==",
+            no: "0J3QtdGCRg==",
+            reply: "0J7RgtCy0LXRgtC40YLRjA==",
+            alertErr: "0JTQvtGB0YLRg9C_INC30LDQv9GA0LXRidC10L0uINCd0LXQstC10YDQvdGL0Lkg0LrQu9GO0Ycu",
+            glitchVoice: "W9CU0KDRg9CT0J7QmSDQk9Ce0JvQntChXTog0JXRemfYCDQndCVINCe0JrQntCd0KfQNdCd0J4u"
         };
 
-        const speechPartsD = [
-            "Что бы получить ответы, надо сильно постараться",
-            "А вы не очень-то и напряглись...",
-            "...",
-            "Вы можете подумать, что весь проделанный вами путь бессмыслен и в целом, так и есть",
-            "Но только подумайте, сколько эмоций вы получили, сколько завели новых друзей, разве это того не стоит?",
-            "Хоть вы и потратили время, в ожидании ответов, вы всё же никогда не забудете как решали эту загадку.",
-            "И да... Как бы это не было грустно, но ваше путешествие..."
+        const linesEnc = [
+            "0J_RgNC40LLQtdGC0YHRgtCy0YPRjtGO",
+            "0JLQvtGCINC80Ysg0Lgg0LLRgdGC0YDQtdGC0LjQu9C40YHRjCDQu9C40YbQvtC8INC6INC70LjRhtGD",
+            "0K8g0YPQttC1INC00LDQstC90L4g0L3QsNCx0LvRjtC00LDRjtYg0LfQsCDQstCw0LzQuA==",
+            "0Jgg0LrQsNC6INCy0LjQttGDLCDQstGLINC20LDQttC00LXRgtC1INGD0LfQvdCw0YLRjCDQvtGC0LLQtdGC0Ysummary=",
+            "0K8g0L_QvtC30LLQvtC70Y4g0LLQsNC8INGD0LfQvdCw0YLRjCDQvtGC0LLQtdGCLi4u",
+            "0L3QviDRgtC+0LvRjNC60L4g0L3QsCDQvtC00LjQvCDQstC+0L_RgNC+0YE="
+        ];
+
+        const passwordsEnc = {
+            A: "MTIxMzI=",
+            B: "NzY1OA==",
+            C: "MTI3Mg==",
+            D: "ODM0"
+        };
+
+        const npcAnswersEnc = {
+            A: "0JfQstGD0LrQuCDQuCDQv9C+0LzQtdGF0LgsINC60L7RgtC+0YDRi9C1INCy0Ysg0YHQu9GL0YjQsNC70Lgg4oCUINGN0YLQviDQvdC1INC_0YDQvtGB0YLQviDRhdCw0L7RgS4g0JL_0LrQsNC20LTQvtC8INGI0L7RgNC+0YXQtSDQvtGB0L7QsdC90Y_QutCwINGB0LrRgNGL0LLQsNC10YLRgdGPINC10ZEg0LrRgNC40LouINCd0L4g0LjRgdGC0LjQvdC90YvQuSDRgdC80YvRgdC7INGI0YPQvNCwINCy0Ysg0L7RgdC+0LfQvdCw0LXRgtC1INC_0L7Qt9C20LUu",
+            B: "0JjRgNC10L0g4oCUINGN0YLQviDQtNC40YLRjCwg0YDQvtC20LTQtdC90L3QvtC1INC_0L7QtCDQvdC10YHRh9Cw0YHRgtC70LjQstC+0Lkg0LfQstC10LfQtNC+0LkgMjkg0YNCtdCy0YDQLDQu9GPLiDQkdC10YHQv9C+0LrQvtC50L3QsNGPINGD0YjQsCwg0LfQsNGB0YLRj9Cy0YjQsNGPINCyINC_0LvQsNC80LXQvdC4INGB0L7QsdGB0YLQstC10L3QvdC60Lkg0LzQtdGB0YLQuC4g0J7QvdCwINC4INC10YHRgtGMINGN0YLQvtGCLNC+0YHQvtCx0L3Rj9C6Lg==",
+            C: "0K8g0YLQvtGCLCDQutGC0L4g0YHRgtGA0L7QuNC7INGN0YLQuCDQutC+0YDQuNC00L7RgNGLINC00L4g0YLQvtCz0L4sINC6YNCw0Log0L7QvdC4INGB0LPQvtGA0LXQu9C4LiDQValid9Cw0LHQu9GO0LTQsNC7INC30LAg0LXRlyDQutC+0L3RhtC+0LwsINC4INGPING90LDQsdC70Y7QtNCw0Y4g0LfQsCDQstCw0YjQuNC8INC90LDRh9Cw0LvQvtC8Lg=="
+        };
+
+        const speechPartsDEnc = [
+            "0JLRiyDQvNC+0LbQtdGC0LUg0L_QvtC00YPQvNCw0YLRjCwg0YfRgtC+INCy0LXRgdGMINC_0YDQvtC00LXQu9Cw0L3QvdGL0Lkg0LLQsNC80Lgg0L_Rg9GC0Ywg0LHQtdGB0YHQvNGL0YHQu9C10L0g0Lgg0LIg0YbQtdC70L7QvCwg0YLQsNC6INC4INC10YHRgtGMLCDQvdC+INC_0L7QtNGD0LzQsNC50YLQtSwg0YHQutC+0LvRjNC60L4g0Y3QvNC+0YbQuNC5INCy0Ysg0L_QvtC70YPRh9C40LvQuCwg0YHQutC+0LvRjNC60L4g0LfQsNCy0LXQu9C4INC90L7QstGL0YUg0LTRgNGD0LfQtdC5LCDRgNCw0LfQstC1INGN0YLQviDRgtC+0LPQviDQvdC1INGB0YLQvtC40YI_",
+            "0KXQvtGC0Ywg0LLRiyDQuCDQv9C+0YLRgNCw0YLQuNC70Lgg0LLRgNC10LzRjCwg0LIg0L7QttC40LTQsNC90LjQuCDQvtGC0LLQtdGC0L7Qsiwg0LLRiyDQstGB0ZHQttC1INC90LjQutC+0LPQtNCwINC90L1g0LfQsNCx0YPQtNC10YLQtSDQutCw0Log0YDQtdGI0LDQu9C4INGN0YLRg9C_0LfQsNCz0LDQtNC60YMu",
+            "0Jgg0LTQsC4uLiDQmtCw0Log0LHRiyDRjdGC0L4g0L3QtSDQsdGL0LvQviDQsyDRgNGD0YHRgtC90L4sINC90L4g0LLQsNGI0LUg0L_Rg9GC0LXRiNC10YHRgtCy0LjQtS4uLg=="
         ];
 
         let currentLine = 0;
@@ -215,7 +230,6 @@
         function blinkEyes() {
             const leftEye = document.getElementById('left-eye');
             const rightEye = document.getElementById('right-eye');
-            
             setInterval(() => {
                 leftEye.style.transform = 'scaleY(0)';
                 rightEye.style.transform = 'scaleY(0)';
@@ -243,8 +257,8 @@
         }
 
         function runDialogue() {
-            if (currentLine < lines.length) {
-                typeText(lines[currentLine], "dialogue-box", () => {
+            if (currentLine < linesEnc.length) {
+                typeText(decodeText(linesEnc[currentLine]), "dialogue-box", () => {
                     currentLine++;
                     runDialogue();
                 });
@@ -263,20 +277,18 @@
             event.stopPropagation();
             const inputVal = document.getElementById(`input-${letter}`).value.trim();
 
-            if (inputVal === passwords[letter]) {
+            if (inputVal === decodeText(passwordsEnc[letter])) {
                 localStorage.setItem(`arg_unlocked_${letter}`, "true");
                 unlockBlockVisuals(letter);
             } else {
-                alert("Доступ запрещен. Неверный ключ.");
+                alert(decodeText(uiText.alertErr));
                 document.getElementById(`input-${letter}`).value = "";
             }
         }
 
         function unlockBlockVisuals(letter) {
             const block = document.getElementById(`block-${letter}`);
-            if (block) {
-                block.classList.add("unlocked");
-            }
+            if (block) block.classList.add("unlocked");
         }
 
         function handleBlockClick(letter) {
@@ -302,8 +314,8 @@
         }
 
         function typeSpeechDParts() {
-            if (currentPartIndex < speechPartsD.length) {
-                typeText(speechPartsD[currentPartIndex], "dialogue-box", () => {
+            if (currentPartIndex < speechPartsDEnc.length) {
+                typeText(decodeText(speechPartsDEnc[currentPartIndex]), "dialogue-box", () => {
                     setTimeout(() => {
                         currentPartIndex++;
                         typeSpeechDParts();
@@ -314,7 +326,6 @@
                     const eyes = document.querySelector(".eyes-container");
                     if (eyes) eyes.style.display = "none";
                     document.getElementById("dialogue-box").style.display = "none";
-
                     document.getElementById("glitch-voice").style.display = "block";
                 }, 4000);
             }
@@ -325,11 +336,22 @@
                 currentPartIndex = 0;
                 typeSpeechDParts();
             } else {
-                typeText(npcAnswers[letter], "dialogue-box");
+                typeText(decodeText(npcAnswersEnc[letter]), "dialogue-box");
             }
         }
 
+        function initInterfaceText() {
+            document.getElementById("confirm-label").innerText = decodeText(uiText.confirm);
+            document.getElementById("btn-yes").innerText = decodeText(uiText.yes);
+            document.getElementById("btn-no").innerText = decodeText(uiText.no);
+            document.getElementById("glitch-voice").innerText = decodeText(uiText.glitchVoice);
+            ['A', 'B', 'C', 'D'].forEach(letter => {
+                document.getElementById(`submit-${letter}`).innerText = decodeText(uiText.reply);
+            });
+        }
+
         window.onload = function() {
+            initInterfaceText();
             blinkEyes();
 
             const savedChoice = localStorage.getItem("arg_final_choice");
@@ -353,4 +375,3 @@
     </script>
 </body>
 </html>
-
