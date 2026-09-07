@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Hello</title>
+    <title>Hello You</title>
     <style>
         body {
             background-color: #000;
@@ -83,6 +83,7 @@
             font-family: monospace;
             padding: 5px 12px;
         }
+        .quest-block button { display: none; }
         .quest-block button:hover { background: #444; }
 
         .quest-block.unlocked {
@@ -181,32 +182,33 @@
 
     <script>
         function decodeText(base64Str) {
-            // Очистка от пробелов, замена URL-safe символов, дополнение '='
-            let cleaned = base64Str.replace(/\s/g, '').replace(/_/g, '/').replace(/-/g, '+');
-            while (cleaned.length % 4 !== 0) {
-                cleaned += '=';
+            try {
+                let cleaned = String(base64Str).replace(/\s/g, '').replace(/_/g, '/').replace(/-/g, '+');
+                while (cleaned.length % 4 !== 0) cleaned += '=';
+                const binary = atob(cleaned);
+                const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+                return new TextDecoder('utf-8', { fatal: false }).decode(bytes);
+            } catch (e) {
+                return '';
             }
-            return decodeURIComponent(atob(cleaned).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
         }
 
         const uiText = {
-            confirm: "0JLQu9C1INGD0LLQtdGA0LXQvdGLPw==",
+            confirm: "0JLRiyDRg9Cy0LXRgNC10L3Riz8=",
             yes: "0JTQsA==",
-            no: "0J3QtdGCRg==",
-            reply: "0J7RgtCy0LXRgtC40YLRjA==",
-            alertErr: "0JTQvtGB0YLRg9C_INC30LDQv9GA0LXRidC10L0uINCd0LXQstC10YDQvdGL0Lkg0LrQu9GO0Ycu",
+            no: "0J3QtdGC",
+            reply: "0J7RgtCy0LXRgg==",
+            alertErr: "0J3QtdCy0LXRgNC90YvQuSDQv9Cw0YDQvtC70YwuINCf0L7Qv9GA0L7QsdGD0LnRgtC1INGB0L3QvtCy0LAu",
             glitchVoice: "Li4u"
         };
 
         const linesEnc = [
-            "0J_RgNC40LLQtdGC0YHRgtCy0YPRjtGO",
+            "0J_RgNC40LLQtdGC0YHRgtCy0YPRjg==",
             "0JLQvtGCINC80Ysg0Lgg0LLRgdGC0YDQtdGC0LjQu9C40YHRjCDQu9C40YbQvtC8INC6INC70LjRhtGD",
-            "0K8g0YPQttC1INC00LDQstC90L4g0L3QsNCx0LvRjtC00LDRjtYg0LfQsCDQstCw0LzQuA==",
-            "0Jgg0LrQsNC6INCy0LjQttGDLCDQstGLINC20LDQttC00LXRgtC1INGD0LfQvdCw0YLRjCDQvtGC0LLQtdGC0Yv+",
+            "0K8g0YPQttC1INC00LDQstC90L4g0L3QsNCx0LvRjtC00LDRjiDQt9CwINCy0LDQvNC4",
+            "0Jgg0LrQsNC6INCy0LjQttGDLCDQstGLINC20LDQttC00LXRgtC1INGD0LfQvdCw0YLRjCDQvtGC0LLQtdGC0Ys=",
             "0K8g0L_QvtC30LLQvtC70Y4g0LLQsNC8INGD0LfQvdCw0YLRjCDQvtGC0LLQtdGCLi4u",
-            "0L3QviDRgtC-0LvRjNC60L4g0L3QsCDQvtC00LjQvCDQstC-0L_RgNC-0YE="
+            "0L3QviDRgtC-0LvRjNC60L4g0L3QsCDQvtC00LjQvSDQstC-0L_RgNC-0YE="
         ];
 
         const passwordsEnc = {
@@ -250,12 +252,11 @@
         function typeText(text, elementId, callback) {
             const el = document.getElementById(elementId);
             if (!el) return;
-            el.innerHTML = "";
+            el.textContent = "";
             let i = 0;
             function type() {
                 if (i < text.length) {
-                    el.innerHTML += text.charAt(i);
-                    i++;
+                    el.textContent += text.charAt(i++);
                     setTimeout(type, 40);
                 } else if (callback) {
                     setTimeout(callback, 1500);
@@ -277,7 +278,10 @@
         }
 
         function showBlocks() {
-            document.getElementById("dialogue-box").innerHTML = "";
+            document.getElementById("dialogue-box").textContent = "";
+            document.getElementById("dialogue-box").style.display = "none";
+            document.getElementById("confirm-screen").style.display = "none";
+            document.getElementById("glitch-voice").style.display = "none";
             document.getElementById("blocks-wrapper").style.display = "grid";
         }
 
@@ -373,8 +377,19 @@
             }
 
             ['A', 'B', 'C', 'D'].forEach(letter => {
+                const input = document.getElementById(`input-${letter}`);
                 if (localStorage.getItem(`arg_unlocked_${letter}`) === "true") {
                     unlockBlockVisuals(letter);
+                } else if (input) {
+                    input.value = "";
+                    input.addEventListener("keydown", (event) => {
+                        if (event.key === "Enter") checkPassword(letter, event);
+                    });
+                    input.addEventListener("input", () => {
+                        if (input.value.trim() === decodeText(passwordsEnc[letter])) {
+                            checkPassword(letter, { stopPropagation: () => {} });
+                        }
+                    });
                 }
             });
 
