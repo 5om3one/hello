@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Hello You</title>
+    <title>Hello</title>
     <style>
         body {
             background-color: #000;
@@ -181,7 +181,12 @@
 
     <script>
         function decodeText(base64Str) {
-            return decodeURIComponent(atob(base64Str).split('').map(function(c) {
+            // Очистка от пробелов, замена URL-safe символов, дополнение '='
+            let cleaned = base64Str.replace(/\s/g, '').replace(/_/g, '/').replace(/-/g, '+');
+            while (cleaned.length % 4 !== 0) {
+                cleaned += '=';
+            }
+            return decodeURIComponent(atob(cleaned).split('').map(function(c) {
                 return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
             }).join(''));
         }
@@ -192,7 +197,7 @@
             no: "0J3QtdGCRg==",
             reply: "0J7RgtCy0LXRgtC40YLRjA==",
             alertErr: "0JTQvtGB0YLRg9C_INC30LDQv9GA0LXRidC10L0uINCd0LXQstC10YDQvdGL0Lkg0LrQu9GO0Ycu",
-            glitchVoice: "Li4u" // исправлено на корректный Base64 ("...")
+            glitchVoice: "Li4u"
         };
 
         const linesEnc = [
